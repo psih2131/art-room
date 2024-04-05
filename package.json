@@ -7,9 +7,27 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.6",
+    "@fancyapps/ui": "^5.0.24",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link": "^1.2.14",
+    "apollo-link-http": "^1.5.17",
     "core-js": "^3.8.3",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6",
+    "openseadragon": "^4.1.0",
+    "swiper": "^10.2.0",
+    "v-viewer": "^1.7.1",
+    "viewerjs": "^1.11.6",
     "vue": "^3.2.13",
+    "vue-apollo": "^3.1.1",
+    "vue-easy-lightbox": "^1.16.0",
+    "vue-openseadragon": "^0.1.2",
+    "vue-panzoom": "^1.1.6",
     "vue-router": "^4.0.3",
+    "vue-svg-pan-zoom": "^2.1.0",
+    "vue-viewer": "^1.0.4",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

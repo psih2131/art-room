@@ -1,0 +1,105 @@
+.preloader {
+    padding-top: 144px;
+    padding-bottom: 60px;
+    height: 100vh;
+    width: 100%;
+    z-index: 1000;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: $black;
+}
+
+.preloader__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    width: 100%;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.preloader__box {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+
+
+
+    svg {
+        width: 5px;
+        height: 5px;
+        transition: all ease 0.5s;
+
+    }
+}
+
+.show {
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.rotate1 {
+    .preloader__box {
+        transition-delay: 0.8s;
+        animation: scaleAnim 0.6s linear;
+    }
+}
+
+.rotate2 {
+    .preloader__box {
+        transition-delay: 0.8s;
+        transition: all linear 0.6s;
+        transform: rotate(-90deg);
+    }
+}
+
+@keyframes scaleAnim {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(45deg) scale(1.2);
+    }
+
+    100% {
+        transform: rotate(90deg) scale(1);
+    }
+}
+
+
+
+.rotate1Revers {
+    .preloader__box {
+
+        transition: all linear 0.6s;
+        transform: rotate(-90deg);
+    }
+}
+
+.rotate2Revers {
+
+    .preloader__box {
+        transition: all linear 0.6s;
+        transform: rotate(90deg);
+    }
+
+}
+
+
+.preloader {
+    transition: all ease 0.7s;
+    opacity: 1;
+}
+
+.show__preloader-leave-active {
+    transition: all .3s ease;
+    opacity: 0;
+}

@@ -1,0 +1,26 @@
+.work-comment {
+    width: 100%;
+}
+
+.work-comment__text {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    color: $white;
+    text-align: center;
+    width: 100%;
+    padding-top: 5px;
+}
+
+.popup-work-info__send-text {
+    color: #A6A6A6;
+
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+    letter-spacing: -0.32px;
+    margin-bottom: 20px;
+}

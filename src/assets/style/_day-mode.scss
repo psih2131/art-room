@@ -1,0 +1,149 @@
+.slide-dark-mode {
+    .page-slider__slide {
+        transition: all ease 0.5s;
+    }
+}
+
+.text-header-title {
+    transition: all ease 0.5s;
+}
+
+
+.day-mode {
+    background: $white;
+    color: $blackText;
+
+    .slide-dark-mode {
+        .page-slider__slide {
+            background: $white;
+        }
+    }
+
+    .text-header-title {
+        color: $black;
+    }
+
+    .big-post__title {
+        color: $white;
+    }
+
+    .slide-dark-mode .slide-two-work__title-box .art-post__title {
+        color: $blackText;
+    }
+
+    .slide-two-work__demarcation-line {
+        background: #353535;
+    }
+
+    .burger__icon-line {
+        background: $blackText;
+    }
+
+    .poput-art-slider {
+        background: $white;
+    }
+
+    .poput-art-slider__ar-down {
+        svg {
+            path {
+                fill: $blackText;
+            }
+        }
+    }
+
+    .poput-art-slider__swiper .swiper-pagination-bullet {
+        background: #A6A6A6;
+    }
+
+    .poput-art-slider__swiper .swiper-pagination-bullet-active {
+        background: $black;
+    }
+
+    .poput-art-slider__close {
+        svg {
+            line {
+                fill: $blackText;
+                stroke: $blackText;
+            }
+        }
+    }
+
+
+    .first-slide__btn-ar {
+        svg {
+            path {
+                fill: $blackText;
+            }
+        }
+    }
+
+    .theme-button {
+        background: none;
+    }
+
+    .theme-button__day-mode svg path {
+        fill: #0A0A0B;
+    }
+
+    .poput-art-slider__ar-down-tex {
+        color: #0A0A0B;
+    }
+
+    .poput-art-slider__adutor-name {
+        color: #0A0A0B;
+    }
+
+    .work-comment__text {
+        color: #1B1D1C;
+    }
+
+    .btn-ar__icon-container {
+        svg {
+            path {
+                fill: $grey;
+            }
+        }
+    }
+
+
+
+}
+
+@media only screen and (max-width: 750px) {
+    .day-mode {
+        .fullAnimation {
+            background: #fff;
+        }
+
+        .big-post {
+            background: #C0C2CE;
+        }
+
+        .big-post__description {
+            color: #0A0A0B;
+        }
+
+        .btnV1 {
+            background: #fff;
+        }
+
+        .full-image-popup__title {
+            color: #0A0A0B;
+        }
+    }
+
+    .fancybox__backdrop,
+    .fancy-day-mode {
+        transition: all ease 0.3s;
+    }
+
+    .fancy-day-mode {
+        background: $white;
+
+        .fancybox__backdrop {
+            background: $white;
+            opacity: 1;
+        }
+    }
+
+}

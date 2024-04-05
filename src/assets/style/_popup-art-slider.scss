@@ -1,0 +1,246 @@
+.poput-art-slider {
+    position: fixed;
+    z-index: 1200;
+    width: 100%;
+    height: 100vh;
+    background: $black;
+    left: 0;
+    top: 0;
+
+
+    .container {
+        height: 100%;
+        position: relative;
+        padding-top: 120px;
+        padding-bottom: 60px;
+    }
+}
+
+.poput-art-slider__swiper {
+    height: 100%;
+    position: relative;
+
+    .swiper {
+        height: 100%;
+        padding-bottom: 60px;
+    }
+
+    .swiper-pagination {
+        display: block;
+        position: absolute;
+        top: auto;
+        z-index: 20;
+        bottom: 0px;
+    }
+
+    .swiper-pagination-bullet {
+        background: #353535;
+        width: 8px;
+        height: 8px;
+        opacity: 1;
+        margin: 0 6px !important;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: $white;
+        opacity: 1;
+    }
+}
+
+.poput-art-slider__img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+    display: block;
+    object-fit: cover;
+}
+
+.poput-art-slider__price {
+    position: absolute;
+    left: 0;
+    bottom: 24px;
+}
+
+.poput-art-slider__ar-down {
+    position: absolute;
+    cursor: pointer;
+    right: 0;
+    bottom: 24px;
+    z-index: 50;
+    width: 16px;
+    height: 73px;
+    display: flex;
+    align-items: center;
+
+    svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transition: all ease 0.3s;
+    }
+
+    &:hover {
+        svg {
+            transform: translateY(15px);
+            animation-name: frameAnimation3;
+            /* Имя анимации */
+            animation-duration: 0.5s;
+            /* Продолжительность анимации */
+            animation-timing-function: linear;
+        }
+    }
+}
+
+.poput-art-slider__ar-down-tex {
+    color: $white;
+    position: absolute;
+    right: 30px;
+    font-size: 18px;
+    bottom: 0;
+    font-family: $mainFont;
+}
+
+@keyframes frameAnimation3 {
+    0% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(15px);
+    }
+
+    50% {
+        transform: translateY(7px);
+    }
+
+    75% {
+        transform: translateY(10px);
+    }
+
+    100% {
+        transform: translateY(15px);
+    }
+}
+
+
+.poput-art-slider__close {
+    position: absolute;
+    right: 0;
+    top: 24px;
+    cursor: pointer;
+    transition: all ease 0.5s;
+
+    svg {
+        transition: all ease 0.3s;
+    }
+
+    &:hover {
+        svg {
+            transform: scale(1.2);
+            animation-name: frameAnimation4;
+            /* Имя анимации */
+            animation-duration: 0.5s;
+            /* Продолжительность анимации */
+            animation-timing-function: linear;
+        }
+    }
+}
+
+
+@keyframes frameAnimation4 {
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.2);
+    }
+
+    50% {
+        transform: scale(1.12);
+    }
+
+    75% {
+        transform: scale(1.18);
+    }
+
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+
+
+
+
+
+
+.poput-art-slider {
+    transition: all ease 0.8s;
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+.show-slider-enter-active {
+    transition: all .8s ease;
+    transform: translateY(0px);
+    opacity: 0;
+}
+
+.show-slider-leave-active {
+    transition: all .8s ease;
+
+    transform: translateY(100vh);
+}
+
+.fixedArtImgBefore {
+    z-index: 1500;
+    position: fixed;
+    transition: all ease 0.8s;
+    pointer-events: none;
+    object-fit: cover;
+
+}
+
+.fixedArtImgCenter {
+    transform: translate(-50%, -50%);
+}
+
+.main {
+
+    transition: all ease 0.8s;
+
+}
+
+.main_hide {
+    transform: translateY(100vh);
+}
+
+// .main_hideV2 {
+//     transform: translateY(-70vh);
+// }
+
+.hideOldImg {
+    opacity: 0;
+
+}
+
+.poput-art-slider__adutor-name {
+    position: absolute;
+    z-index: 10;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 100% */
+    text-transform: uppercase;
+    color: $white;
+    top: 44px;
+    left: 0;
+    font-family: $titleFont;
+}
+
+.poput-art-slider__details {
+    top: auto;
+    bottom: 100px;
+}

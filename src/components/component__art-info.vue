@@ -24,7 +24,7 @@
 
                         <div class="fixed-box-info__price">
                             <h3 class="art-post__title">{{ work__title }}</h3>
-                            <h3 class="art-post__name" v-if="work__name_autor != null">by {{ work__name_autor }}</h3>
+                            <h3 class="art-post__name test" v-if="work__name_autor != null">by {{ work__name_autor }}</h3>
                             <p class="art-post__price" v-if="work__price.value != null">
                                 <component__price v-if="work__price && work__price.value && work__price.value > 0" :typeValue="work__price.currency" :priceValue="work__price.value" />
                             </p>

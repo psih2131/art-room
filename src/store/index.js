@@ -29,6 +29,29 @@ export default createStore({
     closeLogStatus: false,
     idCurrentOpenWork: null,
 
+    //public status
+    publickStatus: null,
+
+    //public data user send
+    publicDataUserStatus: null,
+
+    //user token
+    userToken: null,
+
+    //data for user token
+    userTokenData: {
+      'name': null,
+      'email': null,
+      'phone': null,
+    },
+
+    //work id for rate anal query
+    workAnalTypeReaction: null,
+
+
+    //close log after 900 sec triger
+    closeLogStatusAnal: false,
+
   },
   getters: {
   },
@@ -139,6 +162,47 @@ export default createStore({
       state.reloadHomePageStatus = newValue
       console.log(newValue)
     },
+
+
+    changePublickStatus(state, newValue) {
+      state.publickStatus = newValue
+      console.log(newValue)
+    },
+
+
+    changePublicDataUserStatus(state, newValue) {
+      state.publicDataUserStatus = newValue
+      console.log(newValue)
+    },
+
+
+    changeUserToken(state, newValue) {
+      state.userToken = newValue
+      console.log(newValue)
+    },
+
+    changeUserTokenData(state, newValue) {
+      state.userTokenData = newValue
+      console.log(newValue)
+    },
+
+
+
+    changeWorkAnalTypeReaction(state, newValue) {
+      state.workAnalTypeReaction = newValue
+      console.log(newValue)
+    },
+
+
+    changeCloseLogStatusAnal(state, newValue) {
+      state.closeLogStatusAnal = newValue
+      console.log(newValue)
+    },
+
+
+
+
+
 
   },
   actions: {

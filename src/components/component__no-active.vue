@@ -127,13 +127,15 @@ export default {
             this.user__counter_work = this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data.length
 
             //load photo
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url != null){
-                this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url    
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data != null &&
+            this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url){
+                this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url   
             }
             else{
-                this.user__photo = ''
+                this.user__photo =  require('@/assets/img/no-photo.jpg');
             }
 
+            
             //load emails
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.emails.length > 0){
                 this.user__emails = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.emails    
@@ -158,21 +160,21 @@ export default {
                 this.user__socials = []
             }
 
-            //load country
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country.length != null){
-                this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
-            }
-            else{
-                this.user__origin_country = ''
-            }  
+            // //load country
+            // if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country.length != null){
+            //     this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
+            // }
+            // else{
+            //     this.user__origin_country = ''
+            // }  
 
-            //load country
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country.length > 0){
-                this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
-            }
-            else{
-                this.user__origin_country = ''
-            }
+            // //load country
+            // if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country.length > 0){
+            //     this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
+            // }
+            // else{
+            //     this.user__origin_country = ''
+            // }
         }
         
     },

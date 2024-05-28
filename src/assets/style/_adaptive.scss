@@ -902,6 +902,55 @@
         bottom: 350px;
     }
 
+
+
+    .public-status-false {
+        background: #353535;
+
+        .fullAnimation {
+            background: none;
+        }
+
+        .header__right {
+            border-left: solid 2px #343434;
+        }
+
+        .header .container {
+            border-bottom: solid 2px #343434;
+        }
+
+        .preloader {
+            background: #343434;
+
+            .preloader__box {
+                svg {
+                    rect {
+                        fill: $grey;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .publick-user-data {
+        .container {
+            border-top: 2px solid #C0C2CE;
+        }
+    }
+
+    .public-status-false {
+        .header__right {
+            border-left: solid 2px #343434;
+        }
+
+        .header .container {
+            border-bottom: solid 2px #343434;
+        }
+    }
+
+
+
 }
 
 @media only screen and (max-width: 810px) {

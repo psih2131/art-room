@@ -1,7 +1,15 @@
 <template>
     <div class="work-comment" v-if="reaction_data.comments != null && reaction_data.comments.length > 0 && reaction_data.comments != undefined">
         <template v-for="item in reaction_data.comments" :key="item">
-            <p class="work-comment__text">{{ item }}</p>
+            
+            <template v-if="publicStatus == true">
+                <p v-if="reaction_data.user_token == TOKEN" class="work-comment__text">{{ cutComment(item) }}</p>    
+            </template>
+
+            <template v-else>
+                <p class="work-comment__text">{{ cutComment(item) }}</p>    
+            </template>
+            
         </template>
     </div>
 </template>
@@ -19,7 +27,8 @@ export default {
     
     data() {
         return {
-
+            TOKEN: this.$store.state.userToken,
+            publicStatus: this.$store.state.publicDataUserStatus
         }
     },
 
@@ -28,7 +37,15 @@ export default {
     },
 
     methods: {
-
+        cutComment(data){
+            if(data.length > 170){
+                let newComment = data.substring(0, 167);
+                return newComment + ' ...'
+            }
+            else{
+                return data
+            }
+        }
     },
 
     computed: {

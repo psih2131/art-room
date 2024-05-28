@@ -1,5 +1,10 @@
 <template>
-  <div v-if="appStatus == 1" class="app-container" :class="{ 'day-mode': dayMode, 'night-mode': !dayMode, 'overflowChange': hiddenStatus }">
+  <div v-if="appStatus == 1" class="app-container" 
+  :class="{ 'day-mode': dayMode, 'night-mode': !dayMode, 'overflowChange': hiddenStatus, 'public-status-false': showContentStatus == false }">
+
+    <preloader v-if="dataLoad == true" />
+
+    <component__publick_user_data  v-if="dataLoad == true && publicStatus == true && showContentStatus == false" />
 
     <headerComponents v-if="dataLoad == true"/>
 
@@ -30,6 +35,9 @@
 <script>
 // import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 
+import preloader from '@/components/component__preloader.vue'
+import component__publick_user_data from '@/components/component__public-data-user.vue'
+
 import headerComponents from '@/components/component__header.vue'
 import component__app_no_load from '@/components/component__app-no-load.vue'
 import component__app_no_active from '@/components/component__no-active.vue'
@@ -38,10 +46,12 @@ import component__eror404 from '@/components/conponent__eror404.vue'
 export default {
   name: 'art-room',
   components: {
+    preloader,
+    component__publick_user_data,
     headerComponents,
     component__app_no_load,
     component__app_no_active,
-    component__eror404
+    component__eror404,
   },
   data() {
     return {
@@ -49,6 +59,9 @@ export default {
       hiddenStatus: false,
       dataLoad: false,
       appStatus: null,// 0 , 1, 2 , 3
+      publicStatus: null,
+      showContentStatus: null,
+      lastExecutionTime: 0,
     }
   },
   methods: {
@@ -73,22 +86,23 @@ export default {
 
     // Ищем сегмент, следующий сразу за доменным именем
     let targetSegment = urlSegments[3]; // Индекс 3 соответствует сегменту после доменного имени
-
+  
     // Наща переменная с символами
-    let myVariable = targetSegment;
+    let myVariable = targetSegment.slice(0, 6);
 
     if(myVariable != "" && myVariable != null && myVariable.length > 1){
       this.$store.commit('changeLinkAleas', myVariable)
     }
     else{
-      this.$store.commit('changeLinkAleas', '12573d')
+      this.$store.commit('changeLinkAleas', '1de13b')
       // 1de13b
       // c45427
       // 937011
       // ae3de1
-      // 12573d
+      // 12573d  not work
       // ae3de1
       // e4d147
+      // 4eb420
     }
       this.grafQLserver()
     },
@@ -99,6 +113,23 @@ export default {
       const query = `
       query ViewingRoomGetWeb($linkAlias: String) {
       viewingRoomGetWeb(linkAlias: $linkAlias) {
+        artist_data {
+          first_name
+          biography
+          origin_country
+          residence_country
+          image_data {
+            bg_removed_url
+            image_url
+            preview_url
+            system_image_name
+            ui_height
+            ui_width
+            web_url
+            aspect_ratio
+          }
+        }
+
     user_data {
      
    first_name
@@ -200,6 +231,7 @@ export default {
       artwork_id
       comments
       reaction
+      user_token
     }
     description
     valid_from
@@ -322,6 +354,7 @@ export default {
     created_at
     updated_at
     deleted_at
+    is_public
   }
     }
       `;
@@ -350,17 +383,58 @@ export default {
     },
 
     dataServerToStore(data){
+   
+
+
 
       if( data.data.viewingRoomGetWeb.valid_from != null && data.data.viewingRoomGetWeb.valid_until != null){
+
+        this.publicStatus = data.data.viewingRoomGetWeb.is_public
+        this.$store.commit('changePublickStatus', data.data.viewingRoomGetWeb.is_public)
+
+        // if(this.publicStatus == true){
+        //   this.showContentStatus = false
+        // }
+        // else{
+        //   this.showContentStatus = true
+        // }
+
+        console.log('PUBLIC STAUTS', this.publicStatus)
+
+
+
         this.$store.commit('changeAllDataServer', data)
         this.dataLoad = true
         this.chechLifeTile(data)
-        this.$store.commit('changeReloadHomePageStatus', !this.$store.state.reloadHomePageStatus)
+        this.$store.commit('changeReloadHomePageStatus', !this.$store.state.reloadHomePageStatus)  
+
+
+        this.TOCEN_CONTROLLER()
+
+        this.metaDataLoad()
       }
       else{
-        this,loadAppStatusFor404()
+        this.loadAppStatusFor404()
       }
 
+    },
+
+
+    //load meta title and meta description
+    metaDataLoad(){
+      let serverTitle = this.$store.state.allDataServer.data.viewingRoomGetWeb.title
+      let serverDescription = this.$store.state.allDataServer.data.viewingRoomGetWeb.description
+
+      console.log(serverTitle,'XXXXXXXXXXX')
+      if(serverTitle && serverTitle !=""){
+        document.title = serverTitle; // Обновляем заголовок страницы
+      }
+      
+      if(serverDescription && serverDescription != ""){
+        const metaDescription = document.querySelector('meta[name="description"]');
+        metaDescription.setAttribute('content', serverDescription); // Обновляем описание сайта
+      }
+      
     },
 
     //check life time app
@@ -391,7 +465,7 @@ export default {
       this.appStatus = 3
     },
 
-
+    
 
     //ANALITICA  START________________________________________ 
     analFunction(){
@@ -400,6 +474,7 @@ export default {
       let startAtLocalStorage = localStorage.getItem('start_at')
       let getUidLocalStorage = localStorage.getItem('Uid')
       let timeReloadValue = 900 //15 минут
+      let statusPublick = this.$store.state.publickStatus
 
        //проверка наличия значение в локал строредж и его присвоение если его ранее небыло Uid
        if(!getUidLocalStorage){
@@ -409,11 +484,23 @@ export default {
       //проверка наличия значение в локал строредж и его присвоение если его ранее небыло start_at
       if(!startAtLocalStorage){
         localStorage.setItem('start_at', getCurrentTime)
-        
       }
       else{
-        this.$store.commit('changeArtWorkIdAnal', null)
-        this.$store.commit('changeUpdateStatusAnal', true)
+
+        let typeEvent =this.$store.state.workAnalTypeReaction
+
+        if(typeEvent == null){
+          this.$store.commit('changeArtWorkIdAnal', null)
+        }
+   
+  
+
+        if(statusPublick == true){
+          this.$store.commit('changeUpdateStatusAnal', true)
+        }
+        else{
+          this.$store.commit('changeUpdateStatusAnal', true)
+        }
         // let timeDiferent = +getCurrentTime - +startAtLocalStorage
 
         // if(timeDiferent > timeReloadValue){
@@ -469,6 +556,11 @@ export default {
       let startAt = localStorage.getItem('start_at')
       let arcWorkId = this.$store.state.artWorkIdAnal
       let endAt = null
+      let user_token = this.$store.state.userToken
+      let event_type = this.$store.state.workAnalTypeReaction
+  
+ 
+      
 
 
       let timeDiferent = +getCurrentTime - +startAtLocalStorage
@@ -477,9 +569,11 @@ export default {
       if(timeDiferent > 900){
         endAt = +startAt + 900
 
-        let nevUid = this.generateSessionUid(10)
-        localStorage.setItem('Uid', nevUid)
-        localStorage.setItem('start_at', getCurrentTime)
+        this.$store.commit('changeCloseLogStatusAnal', true)
+
+        // let nevUid = this.generateSessionUid(10)
+        // localStorage.setItem('Uid', nevUid)
+        // localStorage.setItem('start_at', getCurrentTime)
       }
       else{
         endAt = this.getCurrentUnixTimestamp()
@@ -506,11 +600,15 @@ export default {
         "viewingRoom": {
             "link_alias": linkAlias,
             "artwork_id": arcWorkId,
+            "event_type": event_type,
             "session_uid": sessionUid,
             "start_at": +startAt,
-            "end_at": +endAt
+            "end_at": +endAt,
+            "user_token": user_token,
         }
       };
+
+      console.log('Anal data',variables)
 
       fetch(serverUrl, {
       method: 'POST',
@@ -530,19 +628,86 @@ export default {
       })
       .then(response => response.json())
       .then(data => this.sendAnalChange(data))
-      .catch(error => console.error('Error:', error));
+      .catch(error => this.erorAnalChange(error));
   },
 
   sendAnalChange(data){
-    let getCurrentTime = this.getCurrentUnixTimestamp()
 
+    //сброс переменной отвечающей за реакцию для статистики
+    this.$store.commit('changeWorkAnalTypeReaction', null)
+
+    let getCurrentTime = this.getCurrentUnixTimestamp()
+    console.log(data.data.updateViewingRoomLogWeb)
       if(data.data.updateViewingRoomLogWeb.success == true){
         this.addToLocalStorage('start_at', getCurrentTime)
+
+
+        let analLogClose = this.$store.state.closeLogStatusAnal
+        if(analLogClose == true){
+
+          let getUid = this.generateSessionUid(10)
+          localStorage.setItem('Uid', getUid)
+
+
+          this.analFunction();
+          this.$store.commit('changeCloseLogStatusAnal', false)
+        }
       }
     
     
     console.log('send analitic',data)
   },
+
+  erorAnalChange(data){
+    console.log(data)
+  },
+
+
+
+
+  //TOKEN CONTROLLER
+  TOCEN_CONTROLLER(){
+    
+    let publicStatus = this.$store.state.publickStatus
+    //если паблик статус false то просто вызываем аналитику
+    if(publicStatus == false){
+      this.analFunction()
+    }
+
+    //если паблик статус true то получаем с локалсторедж токен
+    else if(publicStatus == true){
+
+
+      //получаем с локалсторедж токен
+      let tokenLocalStorage = localStorage.getItem('USER_TOKEN')
+
+
+      //если токен сушествует
+      if(tokenLocalStorage){
+        //помещаем токен с локал стореджа в vuex в переменную токена
+        this.$store.commit('changeUserToken', tokenLocalStorage)
+
+        //отображаем весь скрытый конетен
+        this.showContentStatus = true
+
+
+        this.$store.commit('changePublicDataUserStatus', true)
+
+        console.log('token from local storage:  ', tokenLocalStorage)
+        
+        // this.analFunction()
+       
+      }
+
+      //если токен ещен е создан то ничего не делаем и скрываем весь контент
+      else{
+        this.showContentStatus = false
+      }
+    }
+    else{
+  
+    }
+  }
 
 
   },
@@ -562,6 +727,16 @@ export default {
     watchAnalUpdate() {
       return this.$store.state.dataUpdateStatusAnal
     },
+
+
+    watchPublicDataStatus() {
+      return this.$store.state.publicDataUserStatus
+    },
+
+
+
+
+    
   },
   watch: {
     //watch theme status
@@ -591,8 +766,23 @@ export default {
       if (newValue !== oldValue) {
 
         if(newValue == true){
+
           this.SERVER_QUERY_SEND_NEW_ANALITIC()
           this.$store.commit('changeUpdateStatusAnal', false)
+         
+         
+        }
+
+      }
+    },
+
+    //watch change data status
+    watchPublicDataStatus(newValue, oldValue) {
+      if (newValue !== oldValue) {
+
+        if(newValue == true){
+          this.showContentStatus = true
+          this.analFunction()
         }
 
       }
@@ -600,8 +790,12 @@ export default {
   },
 
   mounted() {
+    // this.analFunction()
     this.grafQLserverLoad()
-    this.analFunction()
+    
+
+    
+    
     console.log('app status', this.appStatus)
   },
 }

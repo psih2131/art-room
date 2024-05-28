@@ -105,6 +105,19 @@
         }
     }
 
+    .publick-user-data .container {
+        border-top: 1px solid $white;
+    }
+
+    .publick-user-data__form-title {
+        color: $black;
+    }
+
+    .form-inp-container__inp-element {
+        border: solid 1px $black;
+        color: $black;
+    }
+
 
 
 }

@@ -1,4 +1,6 @@
 <template>
+    
+
     <header class="header" :class="{fullAnimation : header__full_anim, 'headerHide': header__show, 'showElementHeader': header__show_element,'hideHeaderAll':header__show_all, 'header-hide-scrol-more-100': header__scroll_more_100} ">
         <div class="container">
             <div class="header__left">
@@ -128,21 +130,18 @@
                                 </ul> -->
 
                                 <ul class="tab__list">
-                                    <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+                                    <li class="tab__list-element" v-if="user__type_accoutn != null">{{user__type_accoutn}}</li>
                                     <!-- <li class="tab__list-element">London</li> -->
                                     <template v-if="user__type_accoutn == 'Art Collector'">
-                                      <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">{{ user__origin_country }}</li>
-                                      <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                                      <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">from {{ user__origin_country }}</li>
+                                      <li class="tab__list-element" v-if="user__resident_country != null">{{ user__resident_country }}</li>
                                     </template>
           
                                     <template v-else-if="user__type_accoutn == 'Artist'">
-                                      <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">{{ user__origin_country }}</li>
+                                      <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">from {{ user__origin_country }}</li>
                                       <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
                                     </template>
-          
-          
-                                    
-                                  </ul>
+                                </ul>
 
 
                             </div>
@@ -237,13 +236,13 @@
         </div>
    
     
-
-    <preloader />
+        <!-- <preloader/> -->
+    
 </template>
 
 
 <script>
-import preloader from '@/components/component__preloader.vue'
+// import preloader from '@/components/component__preloader.vue'
 import { unixConverteDate } from '@/plugins/plugin__convert-unix-date.js';
 
 
@@ -289,7 +288,7 @@ export default {
     },
 
     components: {
-        preloader,
+        // preloader,
     },
 
 
@@ -320,6 +319,9 @@ export default {
             let currentHeaderStatus = this.$store.state.mainHeaderHide
             let swiperId = this.$store.state.swipeIndex
 
+            //get public status page
+            let publicStatus = this.$store.state.publickStatus
+
             if(swiperId == null || swiperId == 0){
                 this.$store.commit('changeHeaderMainStatus', !currentHeaderStatus)
                 this.header__show_night_mode = !this.header__show_night_mode
@@ -329,6 +331,66 @@ export default {
             }
 
             this.header__show_meny = !this.header__show_meny
+
+
+            //при открытии меню подгружаем другую картинку и имя если public status true и эта картинка существует на сервере
+            if(publicStatus == true){
+
+                //if meny open
+                if(this.header__show_meny == true){
+                    //image
+                    if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url){
+                        this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url   
+                    }
+                    else{
+                        this.user__photo =  require('@/assets/img/no-photo.jpg');
+                    }
+
+                    //name
+                    if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name ){
+                        this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name 
+                    }
+                    else{
+                        this.user__first_name = ''
+                    }
+                }  
+                //if medy close
+                else{
+                    //image
+                    if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data  &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url  && 
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_url != '' &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_url != ' ' && 
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_url != ""){
+                        this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url
+                    }
+                    else{
+                        // if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data  &&
+                        // this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url){
+                        //     this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url   
+                        // }
+                        // else{
+                        //     this.user__photo =  require('@/assets/img/no-photo.jpg');
+                        // }
+                        this.user__photo =  require('@/assets/img/no-photo.jpg');
+                    }
+
+                    //name
+                    if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name != null && 
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name != ''){
+                        this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name 
+                    }
+                    else{
+                        if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name != null){
+                            this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name 
+                        }
+                        else{
+                            this.user__first_name = ''
+                        }
+                    }
+                }
+            }
         },
 
 
@@ -405,6 +467,9 @@ export default {
 
         //load data user header
         header__data_user(){
+            //get public status page
+            let publicStatus = this.$store.state.publickStatus
+
             //load title website
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.title != null){
                 this.user__title_page = this.$store.state.allDataServer.data.viewingRoomGetWeb.title 
@@ -414,11 +479,29 @@ export default {
             }
 
             //load first name
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name != null){
-                this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name 
+            if(publicStatus == true){
+                if( this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name  && 
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name != ''){
+                    this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name 
+                }
+                else{
+                    if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name != null){
+                        this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name 
+                    }
+                    else{
+                        this.user__first_name = ''
+                    }
+                }
             }
             else{
-                this.user__first_name = ''
+                if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data && 
+                this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name){
+                    this.user__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.first_name 
+                }
+                else{
+                    this.user__first_name = ''
+                }
             }
             
             //load last name
@@ -450,13 +533,35 @@ export default {
             
 
             //load photo
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data != null &&
-            this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url){
-                this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url   
+            if(publicStatus == true){
+                if( this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data  &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url  && 
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_url != '' &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_url != ""){
+                    this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url
+                    
+                }
+                else{
+                    if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data != null &&
+                    this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url){
+                        this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url   
+                    }
+                    else{
+                        this.user__photo =  require('@/assets/img/no-photo.jpg');
+                    }
+                }
             }
             else{
-                this.user__photo =  require('@/assets/img/no-photo.jpg');
+                if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data != null &&
+                this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url){
+                    this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url   
+                }
+                else{
+                    this.user__photo =  require('@/assets/img/no-photo.jpg');
+                }
             }
+
 
             //load emails
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.emails != null){
@@ -483,7 +588,8 @@ export default {
             }
 
             //load country
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country != null){
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country && 
+               this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country != ""){
                 this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country    
             }
             else{
@@ -492,7 +598,8 @@ export default {
             
             
             //load country resident
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country != null){
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country && 
+               this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country != ""){
                 this.user__resident_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
             }
             else{
@@ -619,7 +726,7 @@ export default {
         let social = this.user__socials.find(
             (el) => el.description && el.description === alias
         )
-        console.log('GGG', social)
+    
         let result
 
         if(social != null && social != undefined  && social.value != null){
@@ -645,8 +752,8 @@ export default {
             let typeLink = allData.type
 
             if(typeLink == 'web'){
-                if(url.length > 20){
-                    let newUrl = url.substring(0, 19);
+                if(url.length > 30){
+                    let newUrl = url.substring(0, 29);
                     return newUrl + '...'
                 }
                 else{

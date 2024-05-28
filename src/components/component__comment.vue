@@ -11,7 +11,7 @@
            
             <div class="btn-comment__btn-form btn-comment__btn-form-wrapper">
                 <div class="btn-comment__inp-container">
-                    <textarea :readonly="editStatus" ref="myInput" class="btn-comment__inp" placeholder="Enter comment" v-model="comments"  @input="adjustTextarea($event)"></textarea>
+                    <textarea :readonly="editStatus" ref="myInput" class="btn-comment__inp" placeholder="Enter comment" v-model="comments"  @input="maxLongText(); adjustTextarea($event)" @paste="onPaste"></textarea>
                     <!-- <input :readonly="editStatus" ref="myInput" type="text" class="btn-comment__inp" placeholder="ENTER COMMENT" v-model="comments"> -->
                 </div>
                 <div class="btn-comment__controls-btn btn-comment__form-content"  :class="{ 'black-icon': editStatus === false && comments !== '' && comments !== null }">
@@ -131,7 +131,20 @@ export default {
             return counterStrokeValue;
         },
 
+        // запрен та вставку текста и буфера обмена
+        onPaste(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение вставки
+        const clipboardData = event.clipboardData || window.clipboardData;
+        const pastedText = clipboardData.getData('text/plain');
+        },
 
+        // ограничение длинны комента
+        maxLongText(){
+            let maxLength = 300;
+            if (this.comments.length > maxLength) {
+                this.comments = this.comments.slice(0, maxLength);
+            }
+        },
 
         adjustTextarea(event) {
             let strokeValue = this.textareaStrokeCalc()
@@ -143,7 +156,7 @@ export default {
             if (mediaQuery.matches) {
             // Then trigger an alert
             let textarea = event.target
-            console.log(event)
+            
             textarea.style.height = 'auto';
             textarea.style.height = (textarea.scrollHeight) + 'px';
             let currentAllHeight = textarea.scrollHeight + 15
@@ -251,30 +264,55 @@ export default {
         getCommentText(){
             let idWorkOpen = this.workId
             let storeData = this.$store.state.allDataServer.data.viewingRoomGetWeb.reactions
-            if(storeData != null){
-                for(let i = 0; i < storeData.length; i++){
-                if(idWorkOpen == storeData[i].artwork_id){
-                    if(storeData[i].comments != null && storeData[i].comments.length > 0 && storeData[i].comments != 'null'){
-                        this.comments = storeData[i].comments[0]
-                        this.openForm = true
-                        this.editStatus = true
-                        setTimeout(()=>{
-                            this.firstLoadHeight()
-                        }, 400)
-                    }
-                    else{
-                        this.comments = ''
-                        this.openForm = false
-                        this.editStatus = false
-                        this.firstLoadHeight(false)
+            let publicStatus = this.$store.state.publickStatus
+            let TOKEN = this.$store.state.userToken
+
+            if(publicStatus == false){
+                if(storeData != null){
+                    for(let i = 0; i < storeData.length; i++){
+                    if(idWorkOpen == storeData[i].artwork_id){
+                        if(storeData[i].comments != null && storeData[i].comments.length > 0 && storeData[i].comments != 'null'){
+                            this.comments = storeData[i].comments[0]
+                            this.openForm = true
+                            this.editStatus = true
+                            setTimeout(()=>{
+                                this.firstLoadHeight()
+                            }, 400)
+                        }
+                        else{
+                            this.comments = ''
+                            this.openForm = false
+                            this.editStatus = false
+                            this.firstLoadHeight(false)
+                        }
                     }
                 }
+                }
             }
-            }
-            
-            
 
-           
+            else{
+                if(storeData != null && TOKEN){
+                    for(let i = 0; i < storeData.length; i++){
+                    if(idWorkOpen == storeData[i].artwork_id  && TOKEN == storeData[i].user_token){
+                        if(storeData[i].comments != null && storeData[i].comments.length > 0 && storeData[i].comments != 'null'){
+                            this.comments = storeData[i].comments[0]
+                            this.openForm = true
+                            this.editStatus = true
+                            setTimeout(()=>{
+                                this.firstLoadHeight()
+                            }, 400)
+                        }
+                        else{
+                            this.comments = ''
+                            this.openForm = false
+                            this.editStatus = false
+                            this.firstLoadHeight(false)
+                        }
+                    }
+                }
+                }
+            }
+ 
 
         },
 
@@ -290,6 +328,7 @@ export default {
             const serverUrl = 'https://ma-artist-api-dev.herokuapp.com/graphql';
 
             const linkAlias = this.$store.state.linkAleas;
+            const userToken = this.$store.state.userToken
 
             const mutation = `
             mutation UpdateViewingRoomWeb($viewingRoom: OfferReactionStatsInput) {
@@ -305,7 +344,8 @@ export default {
             "viewingRoom": {
                 "link_alias": this.$store.state.linkAleas,
                 "artwork_id": this.workId,
-                "comments": valueRate
+                "comments": valueRate,
+                "user_token": userToken,
             }
             };
 
@@ -332,6 +372,13 @@ export default {
 
         handleMutationResponse(data){
             console.log(data)
+
+            //vuex мутация id работы
+            this.$store.commit('changeArtWorkIdAnal', this.workId)
+
+            //vuex мутация тип события комент или реакция
+            this.$store.commit('changeWorkAnalTypeReaction', 'comment')
+            
             this.$store.commit('changeDataUpdateStatus', !this.$store.state.dataUpdateStatus)
             // this.commentSendStatus = true
             if(this.comments != null & this.comments.length > 0 && this.comments != ''){
@@ -346,6 +393,15 @@ export default {
                 console.log('none')
             }
             // alert('done')
+            
+            //получаем с vue publick status
+            let publickStatus = this.$store.state.publickStatus
+
+            //vuex мутация на вызов запроса аналитики в компоненте app.vue только при public status true
+            if(publickStatus == true){
+                this.$store.commit('changeUpdateStatusAnal', true)
+            }
+
         },
         
     },

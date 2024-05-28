@@ -1,5 +1,5 @@
 <template>
-    <main class="main" :class="{'hideSlider': statusLoading, 'show__all_baner-full': show__all_big_art }">
+    <main v-if="showComponent == true" class="main" :class="{'hideSlider': statusLoading, 'show__all_baner-full': show__all_big_art }">
       <div class="page-slider slide-dark-mode">
 
         <section class="page-slider__slide first-slide" > 
@@ -68,7 +68,7 @@
                       <div class="slide-two-work__title-box">
                         <h3 class="art-post__title">{{ item.artwork_title }}</h3>
                           <p class="art-post__price">
-                            <component__price :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
+                            <component__price v-if="item.sale_price && item.sale_price.value > 0" :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
                           </p>
                           <template  v-for="element in user__works_reactions" :key="element">
                             <component__comment_value v-if="item.id == element.artwork_id" :reaction_data="element" />
@@ -101,16 +101,16 @@
                     <div class="tab__col1">
                       <h2 class="tab__title">{{ user__first_name }}</h2>
                       <ul class="tab__list">
-                        <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+                        <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
                         <!-- <li class="tab__list-element">London</li> -->
                         <template v-if="user__type_accoutn == 'Art Collector'">
-                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-                          <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+                          <li class="tab__list-element" v-if="user__resident_country != null">{{ user__resident_country }}</li>
                         </template>
 
                         <template v-else-if="user__type_accoutn == 'Artist'">
-                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-                          <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+                          <li class="tab__list-element" v-if=" user__origin_country != null ">from {{ user__origin_country }}</li>
+                          <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
                         </template>
                       </ul>
                       <div class="tab__description about-text-container">
@@ -165,11 +165,7 @@
 
                       </ul>
                     </div>
-                    <div class="tab__down">
-                      This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                      © 2023 Art eService Ltd. Registered in England.<br>
-                      ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                    </div>
+                    <component__copy_text />
                   </div>
                 </div>  
               </div>
@@ -181,16 +177,16 @@
                   <div class="tab__anim-wrapper">
                     <h2 class="tab__title">{{ user__first_name }}</h2>
                     <ul class="tab__list">
-                      <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+                      <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
                       <!-- <li class="tab__list-element">London</li> -->
                       <template v-if="user__type_accoutn == 'Art Collector'">
-                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-                        <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+                        <li class="tab__list-element" v-if="  user__resident_country != null">{{ user__resident_country }}</li>
                       </template>
 
                       <template v-else-if="user__type_accoutn == 'Artist'">
-                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-                        <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+                        <li class="tab__list-element" v-if="  user__origin_country != null ">from {{ user__origin_country }}</li>
+                        <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
                       </template>
                     </ul>
                     <div class="tab__awards-row">
@@ -214,11 +210,7 @@
                       </div>
 
                     </div>
-                    <div class="tab__down">
-                      This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                      © 2023 Art eService Ltd. Registered in England.<br>
-                      ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                    </div>
+                    <component__copy_text />
                     </div>
                 </div>
               </div>
@@ -230,16 +222,16 @@
                   <div class="tab__anim-wrapper">
                   <h2 class="tab__title">{{ user__first_name }}</h2>
                   <ul class="tab__list">
-                    <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+                    <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
                     <!-- <li class="tab__list-element">London</li> -->
                     <template v-if="user__type_accoutn == 'Art Collector'">
-                      <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-                      <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                      <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+                      <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
                     </template>
 
                     <template v-else-if="user__type_accoutn == 'Artist'">
-                      <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-                      <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+                      <li class="tab__list-element" v-if="  user__origin_country != null ">from {{ user__origin_country }}</li>
+                      <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
                     </template>
                   </ul>
                   <div class="tab__awards-row">
@@ -263,11 +255,7 @@
                       </div>
                   </div>
 
-                  <div class="tab__down">
-                    This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                    © 2023 Art eService Ltd. Registered in England.<br>
-                    ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                  </div>
+                  <component__copy_text />
                     
                   </div>
               </div>
@@ -294,16 +282,16 @@
                     <div class="tab__col1">
                       <h2 class="tab__title">{{ user__first_name }}</h2>
                       <ul class="tab__list">
-                        <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+                        <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
                         <!-- <li class="tab__list-element">London</li> -->
                         <template v-if="user__type_accoutn == 'Art Collector'">
-                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-                          <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+                          <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
                         </template>
 
                         <template v-else-if="user__type_accoutn == 'Artist'">
-                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-                          <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+                          <li class="tab__list-element" v-if="  user__origin_country != null ">from {{ user__origin_country }}</li>
+                          <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
                         </template>
                       </ul>
                       <div class="tab__description about-text-container">
@@ -358,11 +346,7 @@
 
                       </ul>
                     </div>
-                    <div class="tab__down">
-                      This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                      © 2023 Art eService Ltd. Registered in England.<br>
-                      ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                    </div>
+                    <component__copy_text />
                   </div>
                 </div>  
               </div>
@@ -377,13 +361,13 @@
                       <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                       <!-- <li class="tab__list-element">London</li> -->
                       <template v-if="user__type_accoutn == 'Art Collector'">
-                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-                        <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+                        <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
                       </template>
 
                       <template v-else-if="user__type_accoutn == 'Artist'">
-                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-                        <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+                        <li class="tab__list-element" v-if=" user__origin_country != null ">from {{ user__origin_country }}</li>
+                        <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
                       </template>
                     </ul>
                     <div class="tab__awards-row">
@@ -407,11 +391,7 @@
                       </div>
 
                     </div>
-                    <div class="tab__down">
-                      This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                      © 2023 Art eService Ltd. Registered in England.<br>
-                      ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                    </div>
+                    <component__copy_text />
                     </div>
                 </div>
               </div>
@@ -423,16 +403,16 @@
                   <div class="tab__anim-wrapper">
                   <h2 class="tab__title">{{ user__first_name }}</h2>
                   <ul class="tab__list">
-                    <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+                    <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
                     <!-- <li class="tab__list-element">London</li> -->
                     <template v-if="user__type_accoutn == 'Art Collector'">
-                      <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-                      <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+                      <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+                      <li class="tab__list-element" v-if="  user__resident_country != null">{{ user__resident_country }}</li>
                     </template>
 
                     <template v-else-if="user__type_accoutn == 'Artist'">
-                      <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-                      <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+                      <li class="tab__list-element" v-if="  user__origin_country != null ">from {{ user__origin_country }}</li>
+                      <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
                     </template>
                   </ul>
                   <div class="tab__awards-row">
@@ -456,11 +436,7 @@
                       </div>
                   </div>
 
-                  <div class="tab__down">
-                    This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                    © 2023 Art eService Ltd. Registered in England.<br>
-                    ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                  </div>
+                  <component__copy_text />
                     
                   </div>
               </div>
@@ -475,12 +451,12 @@
       </div>
     </main>
   
-    <popup__art_slider :popupStatus="show__slider_popup" @closePopup="closePoupArt" @openDopInfoArt="openDopArtInfo" />
+    <popup__art_slider v-if="showComponent == true" :popupStatus="show__slider_popup" @closePopup="closePoupArt" @openDopInfoArt="openDopArtInfo" />
   
-    <popup__art_info :openDop="dopInfoStatus" :currentId="user__current_id_work"  @closeDop="closeDopInfoArt"/>
+    <popup__art_info v-if="showComponent == true" :openDop="dopInfoStatus" :currentId="user__current_id_work"  @closeDop="closeDopInfoArt"/>
 
 
-    <div class="popup-simmilat-popup" v-if="similarPop">
+    <div class="popup-simmilat-popup" v-if="similarPop && showComponent == true">
 
       <div class="popup-simmilat-popup__element simmilar-about" v-if="similarAbout">
         <div class="tab__col-photo-mob">
@@ -491,16 +467,16 @@
         <div class="tab__col1">
           <h2 class="tab__title">{{ user__first_name }}</h2>
           <ul class="tab__list">
-            <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+            <li class="tab__list-element" v-if="user__type_accoutn != null">{{user__type_accoutn}}</li>
             <!-- <li class="tab__list-element">London</li> -->
             <template v-if="user__type_accoutn == 'Art Collector'">
-              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-              <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+              <li class="tab__list-element" v-if="  user__resident_country != null">{{ user__resident_country }}</li>
             </template>
 
             <template v-else-if="user__type_accoutn == 'Artist'">
-              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-              <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+              <li class="tab__list-element" v-if=" user__origin_country != null ">from {{ user__origin_country }}</li>
+              <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
             </template>
           </ul>
           <div class="tab__description about-text-container">
@@ -525,16 +501,16 @@
         <div class="tab__anim-wrapper">
           <h2 class="tab__title">{{ user__first_name }}</h2>
           <ul class="tab__list">
-            <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+            <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
             <!-- <li class="tab__list-element">London</li> -->
             <template v-if="user__type_accoutn == 'Art Collector'">
-              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-              <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+              <li class="tab__list-element" v-if="  user__resident_country != null">{{ user__resident_country }}</li>
             </template>
 
             <template v-else-if="user__type_accoutn == 'Artist'">
-              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-              <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+              <li class="tab__list-element" v-if="  user__origin_country != null ">from {{ user__origin_country }}</li>
+              <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
             </template>
           </ul>
           <div class="tab__awards-row">
@@ -566,16 +542,16 @@
           <div class="tab__anim-wrapper">
           <h2 class="tab__title">{{ user__first_name }}</h2>
           <ul class="tab__list">
-            <li class="tab__list-element" v-if="user__type_accoutn.length > 0 && user__type_accoutn != null">{{user__type_accoutn}}</li>
+            <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
             <!-- <li class="tab__list-element">London</li> -->
             <template v-if="user__type_accoutn == 'Art Collector'">
-              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
-              <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
+              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">from {{ user__origin_country }}</li>
+              <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
             </template>
 
             <template v-else-if="user__type_accoutn == 'Artist'">
-              <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
-              <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
+              <li class="tab__list-element" v-if="  user__origin_country != null ">from {{ user__origin_country }}</li>
+              <li class="tab__list-element" v-if="  user__resident_country != null ">{{ user__resident_country }}</li>
             </template>
           </ul>
           <div class="tab__awards-row">
@@ -615,6 +591,7 @@
   import component__comment_value from '@/components/component__comment-value.vue'
   import component__price from '@/components/component__price.vue'
   import component__social from '@/components/component__social.vue'
+  import component__copy_text from '@/components/component__copytext.vue'
 
   //json to list convert plugin
   import { convertJsonToArray } from '@/plugins/plugin__convet-json-to-list.js';
@@ -629,6 +606,7 @@
         component__comment_value,
         component__price,
         component__social,
+        component__copy_text,
     },
     data() {
       return {
@@ -702,6 +680,9 @@
 
         //data works reactions
         user__works_reactions: [],
+
+
+        showComponent: false,
       }
     },
     methods: {
@@ -1258,20 +1239,22 @@
             }
 
             //load country
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country != null){
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country && 
+            this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country != "" ){
                 this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country    
             }
             else{
-                this.user__origin_country = ''
+                this.user__origin_country = null
             }
             
             
             //load country resident
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country != null){
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country && 
+            this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country != ""){
                 this.user__resident_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
             }
             else{
-                this.user__resident_country = ''
+                this.user__resident_country = null
             } 
 
 
@@ -1353,13 +1336,49 @@
                 this.avards_visible = false
             }
 
-
-
-            
-
-
-       
         },
+
+
+
+        allStartFunctions(){
+          this.home__data_user()
+          this.culcHeightFirstSec()
+          this.culcHeightDownAbout()
+          this.culcHeightDownAvards()
+          this.culcHeightDownExhibitions()
+        },
+
+
+        firstLoad(){
+        let publicStatus = this.$store.state.publickStatus 
+        if(publicStatus == false){
+          this.showComponent = true
+
+          this.allStartFunctions()
+        }
+        else if(publicStatus == true){
+          if(this.$store.state.userToken){
+            this.showComponent = true
+            this.allStartFunctions()
+
+            setTimeout(()=>{
+                this.animFirstSlide()
+            },2500)
+          }
+          else{
+            this.showComponent = false
+          }
+          
+        }
+
+        else{
+          this.showComponent = true
+          this.allStartFunctions()
+        }
+        
+      },
+
+
     },
   
   
@@ -1377,15 +1396,25 @@
           watchDataChangeStatus() {
             return this.$store.state.reloadHomePageStatus
           },
+
+
+          watchPublicDataStatus() {
+            return this.$store.state.publicDataUserStatus
+          },
       },
   
       watch: {
           //watch data store and use function if data changed
           wachPreloaderStatus(newValue, oldValue) {
               if (newValue !== oldValue) {
+                let publicStatus = this.$store.state.publickStatus 
+                if(publicStatus == false){
                   this.animFirstSlide()
+                }
+
               }
           },
+
   
           wachSwiperCurrentId(newValue, oldValue) {
               if (newValue !== oldValue) {
@@ -1399,18 +1428,31 @@
               this.home__data_user()
               console.log('reload______________________')
             }
-          }
+          },
+
+
+          //watch change data status
+          watchPublicDataStatus(newValue, oldValue) {
+            if (newValue !== oldValue) {
+
+              if(newValue == true){
+                this.showComponent = true
+                this.allStartFunctions()
+                setTimeout(()=>{
+                  this.animFirstSlide()
+                },100)
+                
+              }
+
+            }
+          },
       },
   
       setup() {
 
       },
       mounted() {
-        this.home__data_user()
-        this.culcHeightFirstSec()
-        this.culcHeightDownAbout()
-        this.culcHeightDownAvards()
-        this.culcHeightDownExhibitions()
+        this.firstLoad();
       },
   }
   </script>

@@ -47,7 +47,7 @@ export default {
 
             if ('ontouchstart' in window) {
             // Устройство поддерживает сенсорный экран
-            console.log('У вас сенсорный экран');
+     
 
             const circle = document.getElementById('draggable');
             let isDragging = false;
@@ -82,7 +82,7 @@ export default {
                             // Определяем номер блока и выводим в консоль
                             const blockNumber = closestSectionIndex + 1;
                             if (blockNumber !== currentBlockNumber) {
-                                console.log(`Номер блока: ${blockNumber}`);
+                          
                                 currentBlockNumber = blockNumber;
                                 this.changeImage(blockNumber);
                                 
@@ -115,7 +115,7 @@ export default {
 
                 container.addEventListener('mouseenter', () => {
                     if (isScriptStopped) {
-                        console.log('Скрипт возобновлен.');
+                    
                     }
                     isScriptStopped = false;
                     
@@ -134,7 +134,6 @@ export default {
                             const newLeft = closestSectionIndex * sectionWidth;
                             circle.style.left = `${newLeft}px`;
 
-                            console.log('Скрипт остановлен и кружок автоматически выровнен.');
                             isScriptStopped = true;
 
                            
@@ -147,7 +146,7 @@ export default {
 
             } else {
             // Устройство не поддерживает сенсорный экран
-            console.log('У вас нет сенсорного экрана');
+     
             const circle = document.getElementById('draggable');
             let isDragging = false;
             let autoAlignTimer;
@@ -180,7 +179,7 @@ export default {
                             // Определяем номер блока и выводим в консоль
                             const blockNumber = closestSectionIndex + 1;
                             if (blockNumber !== currentBlockNumber) {
-                                console.log(`Номер блока: ${blockNumber}`);
+                         
                                 currentBlockNumber = blockNumber;
                                 this.changeImage(blockNumber)
                             }
@@ -209,7 +208,7 @@ export default {
 
                 container.addEventListener('mouseenter', () => {
                     if (isScriptStopped) {
-                        console.log('Скрипт возобновлен.');
+                
                     }
                     isScriptStopped = false;
                 });
@@ -227,7 +226,6 @@ export default {
                             const newLeft = closestSectionIndex * sectionWidth;
                             circle.style.left = `${newLeft}px`;
 
-                            console.log('Скрипт остановлен и кружок автоматически выровнен.');
                             isScriptStopped = true;
 
                             
@@ -269,18 +267,38 @@ export default {
             let idWork = this.workId
             let reactionForThisWork = this.$store.state.allDataServer.data.viewingRoomGetWeb.reactions
             let reactionValue = null;
+            let publicStatus = this.$store.state.publicDataUserStatus
+            let TOKEN = this.$store.state.userToken
 
-            if(reactionForThisWork != null && reactionForThisWork.length > 0){
+            if(publicStatus == false){
+                if(reactionForThisWork != null && reactionForThisWork.length > 0){
+
+                    for(let i = 0; i < reactionForThisWork.length; i++){
+                        let idReaction = reactionForThisWork[i].artwork_id
+                        if(+idReaction == +idWork){
+                            reactionValue = reactionForThisWork[i].reaction
+                        }
+                    }
+                }
+
+                this.setDefaultValueForCircle(reactionValue)
+            }
+
+            else{
+                if(reactionForThisWork != null && reactionForThisWork.length > 0){
 
                 for(let i = 0; i < reactionForThisWork.length; i++){
                     let idReaction = reactionForThisWork[i].artwork_id
-                    if(+idReaction == +idWork){
+                    if(+idReaction == +idWork && TOKEN == reactionForThisWork[i].user_token){
                         reactionValue = reactionForThisWork[i].reaction
                     }
                 }
+                }
+
+                this.setDefaultValueForCircle(reactionValue)
             }
 
-            this.setDefaultValueForCircle(reactionValue)
+            
 
         },
 
@@ -290,7 +308,7 @@ export default {
             let trackRate = document.querySelector('.rate__track')
             let trackRate_width = trackRate.offsetWidth 
             let trackRate_width_one_sec = trackRate_width / 4
-            console.log(trackRate_width_one_sec)
+        
 
             if(valueReaction == 'like'){
                 circleRate.style.left = trackRate_width_one_sec * 3 + 'px'
@@ -318,7 +336,7 @@ export default {
         },
 
         SERVER_QUERY_SEND_NEW_RATE(valueRate){
-            console.log(valueRate)
+         
             let currentRateValue = '';
             if(valueRate == 0){
                 currentRateValue = 'none'
@@ -338,6 +356,7 @@ export default {
             const serverUrl = 'https://ma-artist-api-dev.herokuapp.com/graphql';
 
             const linkAlias = this.$store.state.linkAleas;
+            const userToken = this.$store.state.userToken
 
             const mutation = `
             mutation UpdateViewingRoomWeb($viewingRoom: OfferReactionStatsInput) {
@@ -353,7 +372,8 @@ export default {
             "viewingRoom": {
                 "link_alias": linkAlias,
                 "artwork_id": this.workId,
-                "reaction": currentRateValue
+                "reaction": currentRateValue,
+                "user_token": userToken,
             }
             };
 
@@ -379,8 +399,33 @@ export default {
         },
 
         handleMutationResponse(data){
-            console.log(data)
+            console.log('rate data response', data)
+
+            //vuex мутация id работы
+            this.$store.commit('changeArtWorkIdAnal', this.workId)
+            console.log('Id Work Rate', this.$store.state.artWorkIdAnal)
+
+            //vuex мутация тип события комент или реакция
+            this.$store.commit('changeWorkAnalTypeReaction', 'reaction')
+
+
+            
             this.$store.commit('changeDataUpdateStatus', !this.$store.state.dataUpdateStatus)
+
+            
+
+            //получаем с vue publick status
+            let publickStatus = this.$store.state.publickStatus
+
+            //vuex мутация на вызов запроса аналитики в компоненте app.vue только при public status true
+            if(publickStatus == true){
+                this.$store.commit('changeUpdateStatusAnal', true)
+            }
+           
+
+
+
+            
         }
     },
 

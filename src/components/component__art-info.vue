@@ -26,7 +26,7 @@
                             <h3 class="art-post__title">{{ work__title }}</h3>
                             <h3 class="art-post__name" v-if="work__name_autor != null">by {{ work__name_autor }}</h3>
                             <p class="art-post__price" v-if="work__price.value != null">
-                                <component__price :typeValue="work__price.currency" :priceValue="work__price.value" />
+                                <component__price v-if="work__price && work__price.value && work__price.value > 0" :typeValue="work__price.currency" :priceValue="work__price.value" />
                             </p>
                         </div>
                     </div>
@@ -192,22 +192,32 @@
 
                             <div class="popup-work-info__tabs" v-if="work__dop_info">
 
-                                <div class="popup-work-info__tab popup-tab popup-tab_about" @click="tabPopupChange($event)" :class="{'tab-popup__about-open':about_show_all}">
+                                <div v-if="work__dop_info_about"  class="popup-work-info__tab popup-tab popup-tab_about" @click="tabPopupChange($event)" :class="{'tab-popup__about-open':about_show_all}">
                                     <p class="popup-tab__title">about Artist</p>
                                     <div class="popup-tab__body">
                                         <div class="popup-tab__wrapper">
                                             <div class="tab__photo-wrapper">
-                                                <img src="@/assets/img/photo.jpg" alt="" class="tab__photo">
+                                                <img :src="about_image" alt="" class="tab__photo">
                                               </div>
                                               <div class="tab__col1">
-                                                <h2 class="tab__title">Matt Johnson</h2>
+                                                <h2 class="tab__title">{{truncateString(about__first_name)}}</h2>
                                                 <ul class="tab__list">
-                                                  <li class="tab__list-element">Artist</li>
-                                                  <li class="tab__list-element">London</li>
-                                                  <li class="tab__list-element">England</li>
+                                                    <li class="tab__list-element" v-if="user__type_accoutn == 'Art Collector'">Artist</li>
+                                                    <!-- <li class="tab__list-element">London</li> -->
+                                                    <template v-if="user__type_accoutn == 'Art Collector'">
+                                                      <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">From {{ user__origin_country }}</li>
+                                                      <li class="tab__list-element" v-if="user__resident_country != null">{{ user__resident_country }}</li>
+                                                    </template>
+                          
+                                                    <template v-else-if="user__type_accoutn == 'Artist'">
+                                                      <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">From {{ user__origin_country }}</li>
+                                                      <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
+                                                    </template>
                                                 </ul>
-                                                <div class="tab__description about-text-container">
-                                                  {{ about_text }}
+                                                <div class="tab__description about-text-container about-text-dop-popup">
+                                                    <div class="about-text-dop-popup__wrapper" ref="aboutWrapperRef">
+                                                        {{ about_text }}
+                                                    </div>
                                                 </div>
                                                 <div class="tab__btn-container" v-if="about_btnStatus">
                                                   <div class="tab__btn btnV1" @click="aboutActive">
@@ -222,7 +232,7 @@
                                     </div>
                                 </div>
 
-                                <div class="popup-work-info__tab popup-tab tab-popup_awards" @click="tabPopupChange($event)" :class="{'tab-popup__awards-open':avards_show_all}">
+                                <div v-if="work__dop_info_awards" class="popup-work-info__tab popup-tab tab-popup_awards" @click="tabPopupChange($event)" :class="{'tab-popup__awards-open':avards_show_all}">
                                     <p class="popup-tab__title">Artist Awards</p>
                                     <div class="popup-tab__body">
                                         
@@ -258,7 +268,7 @@
                                     </div>
                                 </div>
 
-                                <div class="popup-work-info__tab popup-tab  tab-popup_exhibitions" @click="tabPopupChange($event)" :class="{'tab-popup__awards-open':exhibitions_show_all}">
+                                <div v-if="work__dop_info_exhibitions"  class="popup-work-info__tab popup-tab  tab-popup_exhibitions" @click="tabPopupChange($event)" :class="{'tab-popup__awards-open':exhibitions_show_all}">
                                     <p class="popup-tab__title">Artist Exhibitions</p>
                                     <div class="popup-tab__body">
                                         <div class="popup-tab__wrapper">
@@ -295,11 +305,7 @@
                             </div>
 
 
-                            <p class="popup-work-info__text-after-tabs">
-                                This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
-                                © 2023 Art eService Ltd. Registered in England.
-                                ArtUp is a trademark of Art eService Ltd. All rights reserved.
-                            </p>
+                            <component__copy_text />
                         </div>
                     </div>
                 </div>
@@ -333,6 +339,7 @@
 import component__comment from '@/components/component__comment.vue'
 import component__rate from '@/components/component__rate.vue'
 import component__price from '@/components/component__price.vue'
+import component__copy_text from '@/components/component__copytext_art_info.vue'
 
 //json to list convert plugin
 import { convertJsonToArray } from '@/plugins/plugin__convet-json-to-list.js';
@@ -382,12 +389,19 @@ export default {
 
             work__dop_info: false,
 
+            user__type_accoutn: null,
+            user__origin_country: null,
+            user__resident_country: null,
 
-
-            about_text: ' Young artist who began his career in early 2020. He studied painting at a renowned art college, where he specialized in the manipulation of various materials and techniques.   Young artist who began his career in early 2020. He studied painting at a renowned art college, where he specialized in the manipulation of various materials and techniques.  Young artist who began his career in early 2020. He studied painting at a renowned art college, where he specialized in the manipulation of various materials and techniques.   Young artist who began his career in early 2020. He studied painting at a renowned art college, where he specialized in the manipulation of various materials and techniques. ',
+            work__dop_info_about: false,
+            about_text: null,
+            about_image: null,
+            about__first_name: null,
             about_btnStatus: false,
             about_show_all: false,
 
+
+            work__dop_info_awards: false,
             avards_array: [
             {'title':'Best Emerging Artist', 'year': '2020', 'subtitle':'Local Art Show'},
             {'title':'Best Emerging Artist', 'year': '2020', 'subtitle':'Local Art Show'},
@@ -404,7 +418,7 @@ export default {
             counterAvards: 4,
 
 
-
+            work__dop_info_exhibitions: false,
             exhibitions_array: [
             {'title':'Best Emerging Artist', 'year': '2020', 'subtitle':'Local Art Show'},
             {'title':'Best Emerging Artist', 'year': '2020', 'subtitle':'Local Art Show'},
@@ -430,6 +444,7 @@ export default {
         component__comment,
         component__rate,
         component__price,
+        component__copy_text,
     },
 
     methods: {
@@ -574,7 +589,7 @@ export default {
 
 
          tabPopupChange(e) {
-            console.log('gg')
+          
             let parrent = document.querySelector('.popup-work-info__tabs');
             let allTabs = document.querySelectorAll('.popup-tab');
             let curruentElement = e.target;
@@ -584,8 +599,7 @@ export default {
             let index = children.indexOf(curruentElement);
 
             if (index == 2) {
-                console.log(currentClassList);
-                console.log(index);
+               
 
                 // Добавляем класс для анимации к первому элементу
                 allTabs[0].classList.add('animate');
@@ -617,8 +631,7 @@ export default {
             }
 
             if (index == 1) {
-                console.log(currentClassList);
-                console.log(index);
+               
 
                 // Добавляем класс для анимации к первому элементу
                 allTabs[0].classList.add('animat1');
@@ -663,7 +676,7 @@ export default {
                     if(idWork == this.idWork){
                         this.work__all_data = allWorks[i]
                         this.loadAllDataForWork()
-                        console.log(this.work__all_data)
+                       
                     }
                 }
             }
@@ -736,6 +749,8 @@ export default {
             this.work__currentId = this.work__all_data.id
 
 
+            
+
             if(this.work__all_data.exhibition_history != null){
                 let stringValue = this.work__all_data.exhibition_history
                 this.work__exhibition_history = convertJsonToArray(stringValue);
@@ -761,7 +776,123 @@ export default {
             else{
                 this.work__publications = []
             } 
-        }
+        },
+
+        //function for dop info sec SHOW or HIDE
+        dopInfoTabStatus(){
+            //get publick status
+            let publicStatus = this.$store.state.publickStatus
+            
+            //get profile type "Art Collector , Artist,  or other"
+            let profileType = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.profile_type
+
+            if(publicStatus == true && profileType == 'Art Collector'){
+                this.work__dop_info = true
+                this.work__dop_info_about = true
+
+                this.loadDataForDopInfoTabSec()
+                
+            }
+        },
+
+
+        //get data for dop info tab
+        loadDataForDopInfoTabSec(){
+
+            // get about text
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data && this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.biography){
+                this.about_text = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.biography
+                // this.about_text = 'adasd asd asas dasd asd'
+                setTimeout(()=>{
+                    this.tabAboutBtsShow()
+                },300)
+            }
+            else{
+                this.about_text = ''
+               
+            }
+
+            // get about image photo
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data &&
+                this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data && 
+                this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url &&
+                this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url != "" && 
+                this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url != ''){
+                this.about_image = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.image_data.image_url 
+            }
+            else{
+                this.about_image =  require('@/assets/img/no-photo.jpg');
+            }
+            
+            // get about autor name
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data && 
+               this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name){
+                this.about__first_name = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.first_name
+            }
+            else{
+                this.about__first_name = ''
+            }
+
+            //load type accoutn
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.profile_type != null){
+
+            this.user__type_accoutn = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.profile_type    
+            }
+            else{
+            this.user__type_accoutn = ''
+            }
+
+            
+            //load country
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.origin_country &&
+            this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.origin_country != ""){
+                this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.origin_country    
+            }
+            else{
+                this.user__origin_country = null
+            }
+
+
+            //load country resident
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.residence_country && 
+            this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.residence_country != ""){
+                this.user__resident_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.artist_data.residence_country    
+            }
+            else{
+                this.user__resident_country = null
+            } 
+
+
+        },
+
+
+        //отображение или скритие кнопки + для tab about
+        tabAboutBtsShow(){
+            const height = this.$refs.aboutWrapperRef;
+            if(height){
+                if(height.offsetHeight > 122){
+                    this.about_btnStatus = true
+                }
+                else{
+                    this.about_btnStatus = false
+                }
+            }
+            
+        },
+
+
+        //обрезка строки
+        truncateString(str) {
+            // Проверяем длину строки, включая пробелы
+            if (str.length > 34) {
+                // Обрезаем строку до 54 символов и заменяем последние 3 символа на три точки
+                return str.slice(0, 31) + '...';
+            } else {
+                // Если длина строки не превышает 54 символа, возвращаем исходную строку
+                return str;
+            }
+        },
+
     },
 
     computed: {
@@ -772,14 +903,20 @@ export default {
     watch: {
         openDop(newVal, oldVal) {
             // check change currentId props
-            this.currentIdStatusWork() 
+            this.currentIdStatusWork()
+            this.dopInfoTabStatus()
+            if(newVal == true){
+                
+            }
         }
     },
 
     mounted(){
-        this.culcHeightDownAbout()
+        // this.culcHeightDownAbout()
         this.culcHeightDownAvards()
         this.culcHeightDownExhibitions()
+        
+        
     },
 
 }

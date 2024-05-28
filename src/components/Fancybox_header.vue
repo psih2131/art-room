@@ -128,7 +128,7 @@ export default {
 
         tmStatus: function(newVal, oldVal) {
         // Действия при изменении myProp
-        console.log('Значение myProp изменилось:', newVal);
+
         this.changeThemeStatus()
         this.changeZoomStatusIcon()
         }

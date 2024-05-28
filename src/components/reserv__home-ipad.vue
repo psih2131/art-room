@@ -1,5 +1,5 @@
 <template>
-    <main v-if="showComponent == true" class="main" :class="{'hideSlider': statusLoading}" >
+    <main v-if="showComponent == true" class="main" :class="{'hideSlider': statusLoading}">
 
       <div class="bag-fix-slider">
           <div class="bag-fix-slider__image-wrapper" v-for="item in fixedArray" :key="item.id">
@@ -74,7 +74,7 @@
                 </transition>
   
                 <transition name="show__middle_art" >
-                  <div  v-if="show__middle_art && show__middle_art != null"
+                  <div  v-if="show__middle_art && user__works_array.length > 0"
                     class="art-img first-slide__middle-post middle-post art-post" 
                    
                     >
@@ -101,7 +101,7 @@
                           </div>
                           <h3 class="art-post__title">{{ item.artwork_title }}</h3>
                           <p class="art-post__price">
-                            <component__price v-if="item.sale_price && item.sale_price.value > 0" :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
+                            <component__price :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
                           </p>
                         </div>
                       </div>
@@ -137,7 +137,7 @@
                           </div>
                           <h3 class="art-post__title">{{ item.artwork_title }}</h3>
                           <p class="art-post__price">
-                            <component__price v-if="item.sale_price && item.sale_price.value > 0" :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
+                            <component__price :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
                           </p>
                         </div>
 
@@ -152,132 +152,51 @@
           </div>
         </swiper-slide>
         
-        <swiper-slide v-slot="{ isActive, isPrev, isNext  }" v-for="item in user__works_array_slider" :key="item">
-          <div class="page-slider__slide slide-two-work" v-if="item.length == 2">
+        <swiper-slide v-slot="{ isActive, isPrev, isNext  }" v-for="item in user__works_array" :key="item">
+
+          <div class="page-slider__slide slide-one-work" >
             <div class="container">
-              <div class="slide-two-work__container">
-
-                <template v-for="(work, index) in item" :key="index" >
-                  <div v-if="index == 0" class="art-img slide-two-work__img-wrapper">
-                    <div  class="slide-two-work__wp">
-                      <div class="slide-two-work__img-box">
-
-                        <template  v-for="element in user__works_reactions" :key="element">
-                          <component__rate_value v-if="work.id == element.artwork_id" :reaction_data="element" />
-                        </template>
-
-                        <template v-for="(image, innerIndex) in work.image_data" :key="innerIndex">
-                          <img v-if="innerIndex == 0" 
-                              :class="{'activArtImage': isActive, 
-                              'prevArtImage': isPrev , 
-                              'nextArtImage': isNext
-                            }" :src="image.preview_url" alt="" class="art-img-slide slide-two-work__img" @click="openPopupSlider(work.id, $event)">
-                        </template>
-                        
-                      </div>
-                      
-                      <div class="slide-two-work__title-box">
-                          <h3 class="art-post__title">{{ work.artwork_title }}</h3>
-                          <p class="art-post__price">
-                            <component__price v-if="work.sale_price && work.sale_price.value > 0" :typeValue="work.sale_price.currency" :priceValue="work.sale_price.value" />
-                          </p>
-                          <template  v-for="element in user__works_reactions" :key="element">
-                            <component__comment_value v-if="work.id == element.artwork_id" :reaction_data="element" />
-                          </template>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-                
-    
-    
-                <div class="slide-two-work__demarcation-line-wrapper">
-                  <div :class="{'activLineImage': isActive, 
-                  'prevLineImage': isPrev , 
-                  'nextLineImage': isNext}" class="slide-two-work__demarcation-line"></div>
-                </div>
-               
-    
-                <template v-for="(work, index) in item" :key="index" >
-                  <div v-if="index == 1" class="art-img slide-two-work__img-wrapper"  >
-                    <div  class="slide-two-work__wp">
-                      <div class="slide-two-work__img-box">
-
-                        <template  v-for="element in user__works_reactions" :key="element">
-                          <component__rate_value v-if="work.id == element.artwork_id" :reaction_data="element" />
-                        </template>
-
-                        <template v-for="(image, innerIndex) in work.image_data" :key="innerIndex">
-                          <img v-if="innerIndex == 0" 
-                              :class="{'activArtImage': isActive, 
-                              'prevArtImage': isPrev , 
-                              'nextArtImage': isNext
-                            }" :src="image.preview_url" alt="" class="art-img-slide slide-two-work__img" @click="openPopupSlider(work.id, $event)">
-                        </template>
-                        
-                      </div>
-                      
-                      <div class="slide-two-work__title-box">
-                          <h3 class="art-post__title">{{ work.artwork_title }}</h3>
-                          <p class="art-post__price">
-                            <component__price v-if="work.sale_price && work.sale_price.value > 0" :typeValue="work.sale_price.currency" :priceValue="work.sale_price.value" />
-                          </p>
-                          <template  v-for="element in user__works_reactions" :key="element">
-                            <component__comment_value v-if="work.id == element.artwork_id" :reaction_data="element" />
-                          </template>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-
-              </div>
-              
-            </div>
-          </div>
-
-          <div class="page-slider__slide slide-one-work" v-else>
-            <div class="container">
-              <template v-for="(work, index) in item" :key="index">
-                <div v-if="index == 0" class="art-img slide-one-work__wrapper" >
+ 
+                <div class="art-img slide-one-work__wrapper" >
                   <div class="slide-one-work__work">
                     <div class="slide-one-work__img-box">
 
                       <div class="slide-one-work__img-box-wrapper-one">
                         <template  v-for="element in user__works_reactions" :key="element">
-                          <component__rate_value v-if="work.id == element.artwork_id" :reaction_data="element" />
+                          <component__rate_value v-if="item.id == element.artwork_id" :reaction_data="element" />
                         </template>
 
-                        <template v-for="(image, innerIndex) in work.image_data" :key="innerIndex">
+                        <template v-for="(image, innerIndex) in item.image_data" :key="innerIndex">
                           <img v-if="innerIndex == 0"
                               :class="{'activArtImage2': isActive, 
                                   'prevArtImage2': isPrev, 
                                   'nextArtImage2': isNext
                                 }"
-                              :src="image.preview_url" alt="" class="art-img-slide slide-one-work__img" @click="openPopupSlider(work.id, $event)">
+                              :src="image.preview_url" alt="" class="art-img-slide slide-one-work__img" @click="openPopupSlider(item.id, $event)">
                         </template>
                       </div>
                       
                     </div>
                     
                     <div class="slide-two-work__title-box">
-                        <h3 class="art-post__title">{{ work.artwork_title }}</h3>
+                        <h3 class="art-post__title">{{ item.artwork_title }}</h3>
                         <p class="art-post__price">
-                          <component__price v-if="work.sale_price && work.sale_price.value > 0" :typeValue="work.sale_price.currency" :priceValue="work.sale_price.value" />
+                          <component__price :typeValue="item.sale_price.currency" :priceValue="item.sale_price.value" />
                         </p>
                         <template  v-for="element in user__works_reactions" :key="element">
-                          <component__comment_value v-if="work.id == element.artwork_id" :reaction_data="element" />
+                          <component__comment_value v-if="item.id == element.artwork_id" :reaction_data="element" />
                         </template>
                     </div>
                   </div>
                 </div>
-              </template>
+            
             </div>
           </div>
         </swiper-slide>
   
       
         <swiper-slide v-slot="{ isActive, isPrev, isNext  }">
-          <div class="page-slider__slide slide-footer" v-if="avards_visible == true && exhibitions_visible == true">
+          <div class="page-slider__slide slide-footer" v-if="avards_visible && exhibitions_visible">
             <div class="container">
               <div class="slide-footer__wrapper tab__container"
               :class="{'activTab': isActive, 
@@ -298,20 +217,17 @@
                       <div class="tab__col1">
                         <h2 class="tab__title">{{ user__first_name }}</h2>
                         <ul class="tab__list">
-                          <li class="tab__list-element" v-if="user__type_accoutn != null">{{user__type_accoutn}}</li>
+                          <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                           <!-- <li class="tab__list-element">London</li> -->
                           <template v-if="user__type_accoutn == 'Art Collector'">
-                            <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">from {{ user__origin_country }}</li>
-                            <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
+                            <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
+                            <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
                           </template>
 
                           <template v-else-if="user__type_accoutn == 'Artist'">
-                            <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">from {{ user__origin_country }}</li>
-                            <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
+                            <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
+                            <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
                           </template>
-
-
-                          
                         </ul>
                         <div class="tab__description">
                           <div class="about-text-container">
@@ -351,19 +267,15 @@
                           <template v-if="user__socials != null && user__socials != undefined">
                             <div>
                                 <template v-for="item in user__socials" :key="item">
-                                  
                                   <component__social :itemData="item"  v-if="getSocial(item.description).length > 0"/>
-
                               </template>
                             </div>
                           </template>
 
                         </ul>
                       </div>
-                      
-
-                      <component__copy_text />
-
+                      <div class="tab__down"> This viewing room was created in the <a href="https://artup.app/" target="_blank">ArtUp app</a>.<br>
+                         © 2023 Art eService Ltd. Registered in England. ArtUp is a trademark of Art eService Ltd. All rights reserved. </div>
                     </div>
                   </div> 
                   
@@ -389,16 +301,16 @@
                     <div class="tab__anim-wrapper">
                       <h2 class="tab__title">{{ user__first_name }}</h2>
                       <ul class="tab__list">
-                        <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
+                        <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                         <!-- <li class="tab__list-element">London</li> -->
                         <template v-if="user__type_accoutn == 'Art Collector'">
-                          <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">from {{ user__origin_country }}</li>
-                          <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
+                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
+                          <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
                         </template>
 
                         <template v-else-if="user__type_accoutn == 'Artist'">
-                          <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">from {{ user__origin_country }}</li>
-                          <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
+                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
+                          <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
                         </template>
                       </ul>
                       <div class="tab__awards-row">
@@ -441,16 +353,16 @@
                     <div class="tab__anim-wrapper">
                     <h2 class="tab__title">{{ user__first_name }}</h2>
                     <ul class="tab__list">
-                      <li class="tab__list-element" v-if="user__type_accoutn != null && user__type_accoutn.length > 1">{{user__type_accoutn}}</li>
+                      <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                       <!-- <li class="tab__list-element">London</li> -->
                       <template v-if="user__type_accoutn == 'Art Collector'">
-                        <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">from {{ user__origin_country }}</li>
-                        <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
+                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
+                        <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
                       </template>
 
                       <template v-else-if="user__type_accoutn == 'Artist'">
-                        <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">from {{ user__origin_country }}</li>
-                        <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
+                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
+                        <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
                       </template>
                     </ul>
                     <div class="tab__awards-row">
@@ -515,16 +427,16 @@
                       <div class="tab__col1">
                         <h2 class="tab__title">{{ user__first_name }}</h2>
                         <ul class="tab__list">
-                          <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
+                          <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                           <!-- <li class="tab__list-element">London</li> -->
                           <template v-if="user__type_accoutn == 'Art Collector'">
-                            <li class="tab__list-element" v-if=" user__origin_country != null && user__origin_country != null">from {{ user__origin_country }}</li>
-                            <li class="tab__list-element" v-if=" user__resident_country != null">{{ user__resident_country }}</li>
+                            <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
+                            <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
                           </template>
 
                           <template v-else-if="user__type_accoutn == 'Artist'">
-                            <li class="tab__list-element" v-if=" user__origin_country != null && user__origin_country != null ">from {{ user__origin_country }}</li>
-                            <li class="tab__list-element" v-if=" user__resident_country != null && user__resident_country != null ">{{ user__resident_country }}</li>
+                            <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
+                            <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
                           </template>
                         </ul>
                         <div class="tab__description">
@@ -565,9 +477,7 @@
                           <template v-if="user__socials != null && user__socials != undefined">
                             <div>
                                 <template v-for="item in user__socials" :key="item">
-
                                   <component__social :itemData="item"  v-if="getSocial(item.description).length > 0"/>
-                                  
                               </template>
                             </div>
                           </template>
@@ -597,16 +507,16 @@
                     <div class="tab__anim-wrapper">
                       <h2 class="tab__title">{{ user__first_name }}</h2>
                       <ul class="tab__list">
-                        <li class="tab__list-element" v-if=" user__type_accoutn != null">{{user__type_accoutn}}</li>
+                        <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                         <!-- <li class="tab__list-element">London</li> -->
                         <template v-if="user__type_accoutn == 'Art Collector'">
-                          <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">from {{ user__origin_country }}</li>
-                          <li class="tab__list-element" v-if="  user__resident_country != null">{{ user__resident_country }}</li>
+                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
+                          <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
                         </template>
 
                         <template v-else-if="user__type_accoutn == 'Artist'">
-                          <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">from {{ user__origin_country }}</li>
-                          <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
+                          <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
+                          <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
                         </template>
                       </ul>
                       <div class="tab__awards-row">
@@ -648,16 +558,16 @@
                     <div class="tab__anim-wrapper">
                     <h2 class="tab__title">{{ user__first_name }}</h2>
                     <ul class="tab__list">
-                      <li class="tab__list-element" v-if="user__type_accoutn != null">{{user__type_accoutn}}</li>
+                      <li class="tab__list-element" v-if="user__type_accoutn.length > 1 && user__type_accoutn != null">{{user__type_accoutn}}</li>
                       <!-- <li class="tab__list-element">London</li> -->
                       <template v-if="user__type_accoutn == 'Art Collector'">
-                        <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null">from {{ user__origin_country }}</li>
-                        <li class="tab__list-element" v-if="user__resident_country != null">{{ user__resident_country }}</li>
+                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null">{{ user__origin_country }}</li>
+                        <!-- <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null">{{ user__resident_country }}</li> -->
                       </template>
 
                       <template v-else-if="user__type_accoutn == 'Artist'">
-                        <li class="tab__list-element" v-if=" user__origin_country != '' && user__origin_country != null ">from {{ user__origin_country }}</li>
-                        <li class="tab__list-element" v-if=" user__resident_country != '' && user__resident_country != null ">{{ user__resident_country }}</li>
+                        <li class="tab__list-element" v-if=" user__origin_country.length > 1 && user__origin_country != null ">{{ user__origin_country }}</li>
+                        <li class="tab__list-element" v-if=" user__resident_country.length > 1 && user__resident_country != null ">{{ user__resident_country }}</li>
                       </template>
                     </ul>
                     <div class="tab__awards-row">
@@ -718,7 +628,6 @@
   import popup__art_info from '@/components/component__art-info.vue'
   import component__price from '@/components/component__price.vue'
   import component__social from '@/components/component__social.vue'
-  import component__copy_text from '@/components/component__copytext.vue'
   
   
   // Import Swiper Vue.js components
@@ -750,7 +659,6 @@
         component__comment_value,
         component__price,
         component__social,
-        component__copy_text,
     },
     data() {
       return {
@@ -813,9 +721,8 @@
 
         fixedArray: [],
 
-        showComponent: false,
 
-        
+        showComponent: false,
       }
     },
     methods: {
@@ -1012,7 +919,7 @@
 
 
         if(currentId == data.slides.length - 1){
-        
+         
           this.$store.commit('changeHeaderHideAll', true)
         }
         else{
@@ -1035,7 +942,8 @@
 
           if(this.avards_visible && this.exhibitions_visible){
               if (index == 2) {
-            
+             
+    
                 // Добавляем класс для анимации к первому элементу
                 allTabs[0].classList.add('animateBig');
                 allTabs[1].classList.add('animateBig');
@@ -1066,8 +974,7 @@
             }
     
             if (index == 1) {
-         
-    
+           
                 // Добавляем класс для анимации к первому элементу
                 allTabs[0].classList.add('animateBig1');
                 allTabs[1].classList.add('animateBig1');
@@ -1099,7 +1006,7 @@
           }
           else{
             if(index == 1){
-  
+         
   
               // Добавляем класс для анимации к первому элементу
               allTabs[0].classList.add('animateBig3');
@@ -1188,7 +1095,7 @@
           newlement.width = sliderElementWidth
           newlement.height = sliderElementHeight
   
-   
+        
           
           newlement.style.left = `calc(50% - ${sliderElementWidth/2}px)`
           newlement.style.top = `calc(50% - ${sliderElementHeight/2}px)`
@@ -1246,13 +1153,12 @@
         },700)
 
         //ANALITICA
-        
+
         let currentId = this.$store.state.idCurrentOpenWork
-  
+
         this.$store.commit('changeArtWorkIdAnal', currentId)
         this.$store.commit('changeUpdateStatusAnal', true)
-
-    
+        
       },
   
       //open dop info popup
@@ -1284,8 +1190,30 @@
         this.slideTo(namData)
       },
 
-    
+      //url convert for social link
 
+     
+
+        getSocial(alias) {
+        let social = this.user__socials.find(
+            (el) => el.description && el.description === alias
+        )
+    
+        let result
+
+        if(social != null && social != undefined  && social.value != null){
+            result = social.value
+        }
+        else{
+            result = ''
+        }
+
+   
+        return result
+        },
+
+  
+    
 
 
       //load data user home page
@@ -1335,13 +1263,14 @@
             else{
                 this.user__type_accoutn = ''
             }
-            
+
+
+
 
             //load counter work
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data != null){
               this.user__counter_work = this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data.length
             }
-            
 
             //load photo
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data != null &&
@@ -1349,7 +1278,7 @@
                 this.user__photo = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.image_data.image_url    
             }
             else{
-                this.user__photo = require('@/assets/img/no-photo.jpg');
+                this.user__photo = this.user__photo = require('@/assets/img/no-photo.jpg');
             }
 
             //load emails
@@ -1377,22 +1306,20 @@
             }
 
             //load country
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country && 
-               this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country != ""){
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country != null){
                 this.user__origin_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.origin_country    
             }
             else{
-                this.user__origin_country = null
+                this.user__origin_country = ''
             } 
             
             
             //load country resident
-            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country && 
-            this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country != ""){
+            if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country != null){
                 this.user__resident_country = this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.residence_country    
             }
             else{
-                this.user__resident_country = null
+                this.user__resident_country = ''
             } 
 
             //load user biograf
@@ -1406,12 +1333,10 @@
             //load user works
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data.length > 0 && this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data != null){
                 this.fixedArray = this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data
-             
+         
                 let counterSlider = this.user__works_array_slider.length
                 this.user__works_array = this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data
                 let transitArray = this.$store.state.allDataServer.data.viewingRoomGetWeb.artworks_data
-
-
 
                 for(let h = 0; h < transitArray.length; h++ ){
                   let imgsData = transitArray[h].image_data
@@ -1440,32 +1365,16 @@
                   }
                 }
 
+
                 // Группировка элементов массива x попарно
                 for (let i = 0; i < transitArray.length; i += 2) {
-                 
-                  
-                  
-                 
                   let pair = [transitArray[i]];
-
-                  // transitArray[i].image_data.image_url = null
-                  // transitArray[i].image_data.preview_url = null
-
-                 
-
-                  
-
-
-
                   
                   // Добавление второго элемента пары, если он существует
                   if (i + 1 < transitArray.length) {
-                    
                     pair.push(transitArray[i + 1]);
-                    
                   }
 
-                  
                   // Добавление пары в массив y
                   this.user__works_array_slider.push(pair);
                 }
@@ -1473,8 +1382,7 @@
                 if(numberUpdate == 1){
                   this.user__works_array_slider.splice(-counterSlider);
                 }
-       
-                
+           
             }
             else{
                 this.user__works_array = ''
@@ -1496,7 +1404,7 @@
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.exhibitions != null &&
             this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.exhibitions != ''){
                 this.exhibitions_array = convertJsonToArray(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.exhibitions)
-           
+                
                 this.exhibitions_visible = true
 
             }
@@ -1509,34 +1417,16 @@
             if(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.publications != null &&
             this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.publications != ''){
                 this.avards_array = convertJsonToArray(this.$store.state.allDataServer.data.viewingRoomGetWeb.user_data.publications)
-              
+           
                 this.avards_visible = true
             }
             else{
                 this.avards_array = []
                 this.avards_visible = false
-  
             }
         },
 
 
-        getSocial(alias) {
-        let social = this.user__socials.find(
-            (el) => el.description && el.description === alias
-        )
-       
-        let result
-
-        if(social != null && social != undefined  && social.value != null){
-            result = social.value
-        }
-        else{
-            result = ''
-        }
-
-    
-        return result
-        },
 
 
 
@@ -1576,8 +1466,6 @@
           }
           
         },
-
- 
       
     },
 
@@ -1620,25 +1508,26 @@
               }
           },
 
+
           //watch change data status
           watchDataChangeStatus(newValue, oldValue) {
             if (newValue !== oldValue) {
               this.home__data_user(1)
-   
+         
             }
           },
 
-
           //watch change data status
           watchPublicDataStatus(newValue, oldValue) {
-            if(newValue == true){
-                this.showComponent = true
+            if (newValue !== oldValue) {
+
+              this.showComponent = true
                 this.allStartFunctions()
                 setTimeout(()=>{
                   this.animFirstSlide()
                 },100)
-                
-              }
+
+            }
           },
       },
   
@@ -1664,7 +1553,7 @@
 
         const disableSwiper = () => {
           const swiper = swiperData; // получаем экземпляр swiper
-   
+          
           if (!swiper) return; // проверяем наличие экземпляра swiper
           swiper.disable();
         };

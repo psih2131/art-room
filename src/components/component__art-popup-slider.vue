@@ -7,6 +7,7 @@
                     :slides-per-view="1"
                     :space-between="0"
                     :speed="800"
+                    :keyboard="true"
                     :pagination="{
                         clickable: true,
                       }" 
@@ -73,10 +74,11 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-creative';
 
+
 import component__price from '@/components/component__price.vue'
 
 // import required modules
-import { EffectCreative, Pagination, Mousewheel, Navigation  } from 'swiper/modules';
+import { EffectCreative, Pagination, Mousewheel, Navigation, Keyboard  } from 'swiper/modules';
 
 export default {
 
@@ -167,7 +169,7 @@ export default {
     },
     setup() {
         return {
-            modules: [EffectCreative, Pagination, Mousewheel, Navigation],
+            modules: [EffectCreative, Pagination, Mousewheel, Navigation, Keyboard],
         };
     },
 }

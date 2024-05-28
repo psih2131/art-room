@@ -51,7 +51,7 @@
         </template>
 
         <template v-else-if="itemData.type == 'web'">
-          <a target="_blank" :href="getSocialLink(itemData.description, itemData)" class="tab__link-text">{{ getLastSegment(getSocialLink(itemData.description, itemData), itemData) }}</a>
+          <a target="_blank" :href="getSocialLink(itemData.description, itemData)" class="tab__link-text web-link">{{ getLastSegment(getSocialLink(itemData.description, itemData), itemData) }}</a>
       </template>
 
       <template v-else>
@@ -167,8 +167,8 @@ export default {
 
             let typeLink = allData.type
             if(typeLink == 'web'){
-                if(url.length > 20){
-                    let newUrl = url.substring(0, 19);
+                if(url.length > 30){
+                    let newUrl = url.substring(0, 29);
                     return newUrl + '...'
                 }
                 else{
